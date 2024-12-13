@@ -8,22 +8,22 @@ function Quiz(){
     const [choice,setChoice]=useState(-1);
     const [timeLeft, setTimeLeft] = useState(10);
 
-    // useEffect(() => {
-    //     if (timeLeft === 0) {
-    //         if (currQuestion === Questions.length - 1) {
-    //             handleFinish();
-    //         } else {
-    //             nextQuestion();
-    //         }
-    //         return;
-    //     }
+    useEffect(() => {
+        if (timeLeft === 0) {
+            if (currQuestion === Questions.length - 1) {
+                handleFinish();
+            } else {
+                nextQuestion();
+            }
+            return;
+        }
 
-    //     const timer = setInterval(() => {
-    //         setTimeLeft((prevTime) => prevTime - 1);
-    //     }, 1000);
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime) => prevTime - 1);
+        }, 1000);
 
-    //     return () => clearInterval(timer);
-    // }, [timeLeft, currQuestion]);
+        return () => clearInterval(timer);
+    }, [timeLeft, currQuestion]);
 
 
     const nextQuestion =()=>{
