@@ -1,22 +1,11 @@
 
-    export const Questions = [
-        {
-          question: "Which is the most popular JavaScript framework?",
-          options: ["Angular", "React", "Svelte", "Vue"],
-          correctOption: 1, // Index of the correct answer
-          points: 10
-        },
-        {
-          question: "Which company invented React?",
-          options: ["Google", "Apple", "Netflix", "Facebook"],
-          correctOption: 3,
-          points: 10
-        },
-        {
-          question: "What's the fundamental building block of React apps?",
-          options: ["Components", "Blocks", "Elements", "Effects"],
-          correctOption: 0,
-          points: 10
-        }
-      ];
+    const fetchQuestions = async()=>
+      {
+        const url = `https://quizapi.io/api/v1/questions?apiKey=W4fjxXn5Y1NVzGcJpldKrkhv2nRzLRAsopRi2PWu\&category=react&difficulty=Medium&limit=10`
+        const response = await fetch(url);
+        const json= await response.json();
+        return json;
+      }
       
+     export const Questions = await fetchQuestions();
+    console.log(Questions);

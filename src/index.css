@@ -1,5 +1,5 @@
 :root {
-  font-family:cursive;
+  font-family:'Times New Roman', Times, serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -61,9 +61,14 @@ button:focus-visible {
   color: #f9f9f9;
 }
 
+.sub-btn{
+  background-color:#6c2fb7;
+  color: #f9f9f9;
+}
+
 .fin-btn{
   background-color: cadetblue;
-  color:#f9f9f9
+  color:#f9f9f9;
 }
 
 .options{
@@ -93,5 +98,44 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* Mobile view Styles */
+@media (max-width: 750px) {
+  body {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  button {
+    width: 100%;
+    font-size: 0.9em;
+    padding: 0.8em 0;
+  }
+
+  .nxt-btn, .fin-btn, .sub-btn {
+    font-size: 0.9em;
+    padding: 0.8em 0;
+    width: 35%;
+  }
+
+  .options {
+    padding: 15px 5px;
+    border-radius: 20px;
+  }
+
+  .opt {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+  }
+  
+  a {
+    font-size: 0.9em;
   }
 }
