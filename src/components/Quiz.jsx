@@ -13,7 +13,7 @@ function Quiz() {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const response = await fetch("https://quizapi.io/api/v1/questions?apiKey=W4fjxXn5Y1NVzGcJpldKrkhv2nRzLRAsopRi2PWu&category=react&difficulty=Easy&limit=3");
+                const response = await fetch("https://quizapi.io/api/v1/questions?apiKey=W4fjxXn5Y1NVzGcJpldKrkhv2nRzLRAsopRi2PWu&category=react&difficulty=Easy&limit=10");
                 const data = await response.json();
                 setQuestions(data);
             } catch (error) {
