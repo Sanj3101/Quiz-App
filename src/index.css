@@ -34,7 +34,15 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  animation: fadeIn 1s ease-in-out;
+  font-size: clamp(2rem, 5vw, 4rem);
 }
+
+/*.header{
+ 
+
+
+}*/
 
 button {
   border-radius: 8px;
@@ -47,6 +55,7 @@ button {
   color:#f9f9f9;
   cursor: pointer;
   transition: border-color 0.25s;
+  margin: 5px;
 }
 button:hover {
   border-color: #646cff;
@@ -101,6 +110,18 @@ button:focus-visible {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 /* Mobile view Styles */
 @media (max-width: 750px) {
   body {
@@ -139,3 +160,4 @@ button:focus-visible {
     font-size: 0.9em;
   }
 }
+
