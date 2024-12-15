@@ -1,19 +1,42 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Questions } from "../helpers/QuestionBank";
 import { QuizContext } from "../helpers/context";
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
 function Quiz() {
-    const { score, setScore, setGameState, choice, setChoice } = useContext(QuizContext);
+    const { score, setScore, setGameState, choice, setChoice,questions, setQuestions } = useContext(QuizContext);
     const [currQuestion, setCurrQuestion] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(10);
-    const [isSubmitted, setIsSubmitted] = useState(false); 
+    const [loading, setLoading] = useState(true);
+    const [timeLeft, setTimeLeft] = useState(15);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    // Timer
+    // Fetch Questions from API
     useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const response = await fetch("https://quizapi.io/api/v1/questions?apiKey=W4fjxXn5Y1NVzGcJpldKrkhv2nRzLRAsopRi2PWu&category=react&difficulty=Easy&limit=3");
+                const data = await response.json();
+                setQuestions(data);
+            } catch (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed to Fetch Questions",
+                    text: "Please check your internet connection or try again later.",
+                });
+            } finally {
+                setLoading(false); 
+                console.log(questions);
+            }
+        };
+
+        fetchQuestions();
+    }, []);
+
+    // Timer logic
+    useEffect(() => {
+        if (loading || questions.length === 0) return;
+
         if (timeLeft === 0) {
-            if (currQuestion === Questions.length - 1) {
+            if (currQuestion === questions.length - 1) {
                 handleFinish();
             } else {
                 nextQuestion();
@@ -21,22 +44,23 @@ function Quiz() {
             return;
         }
 
-        if (isSubmitted) return; 
+        if (isSubmitted) return;
+
         const timer = setInterval(() => {
             setTimeLeft((prevTime) => prevTime - 1);
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, currQuestion, isSubmitted]);
+    }, [timeLeft, currQuestion, isSubmitted, loading, questions]);
 
     const handleSubmit = () => {
-        if (Questions[currQuestion].correct_answers[choice] === "true") {
+        if (questions[currQuestion].correct_answers[choice] === "true") {
             Swal.fire({
                 icon: "success",
                 title: "Yay ...",
                 text: "You got it correct!",
             });
-            setScore(score + 1);
+            setScore((prevScore) => prevScore + 1);
         } else {
             Swal.fire({
                 icon: "error",
@@ -44,14 +68,13 @@ function Quiz() {
                 text: "You got it wrong!",
             });
         }
-
         setIsSubmitted(true);
     };
 
     const nextQuestion = () => {
-        setChoice(""); 
-        setCurrQuestion(currQuestion + 1);
-        setTimeLeft(10);
+        setChoice("");
+        setCurrQuestion((prev) => prev + 1);
+        setTimeLeft(15);
         setIsSubmitted(false);
     };
 
@@ -59,47 +82,39 @@ function Quiz() {
         setGameState("endScreen");
     };
 
+    // Render loading state
+    if (loading) {
+        return <div>Loading Questions...</div>;
+    }
+
     return (
         <div className="Quiz">
-            <h2>{Questions[currQuestion].question}</h2>
+            <h2>{questions[currQuestion].question}</h2>
             <div className="timer">Time Left: {timeLeft} seconds</div>
             <div className="options">
-                <button className="opt" onClick={() => setChoice("answer_a_correct")} disabled={isSubmitted} >
-                    {Questions[currQuestion].answers["answer_a"]}
-                </button>
-                <br /><br /> 
-                <button className="opt" onClick={() => setChoice("answer_b_correct")} disabled={isSubmitted} >
-                    {Questions[currQuestion].answers["answer_b"]}
-                </button> 
-                <br /><br /> 
-                <button className="opt" onClick={() => setChoice("answer_c_correct")} disabled={isSubmitted} >
-                    {Questions[currQuestion].answers["answer_c"]}
-                </button>
-                <br /><br />
-                <button className="opt" onClick={() => setChoice("answer_d_correct")} disabled={isSubmitted}>
-                    {Questions[currQuestion].answers["answer_d"]}
-                </button>
-                {Questions[currQuestion].answers["answer_e"] && (
-                    <button className="opt" onClick={() => setChoice("answer_e_correct")} disabled={isSubmitted}>
-                        {Questions[currQuestion].answers["answer_e"]}
-                    </button>
-                )}
-                {Questions[currQuestion].answers["answer_f"] && (
-                    <button className="opt" onClick={() => setChoice("answer_f_correct")} disabled={isSubmitted} >
-                        {Questions[currQuestion].answers["answer_f"]}
-                    </button>
-                )}
+                {Object.entries(questions[currQuestion].answers).map(([key, value]) => (
+                    value && (
+                        <button
+                            key={key}
+                            className="opt"
+                            onClick={() => setChoice(`${key}_correct`)}
+                            disabled={isSubmitted}
+                        >
+                            {value}
+                        </button>
+                    )
+                ))}
             </div>
             <br />
-            {currQuestion === Questions.length - 1 ? (
-                <div> 
-                    <button className="sub-btn" onClick={handleSubmit} disabled={isSubmitted}>Submit</button>   
+            {currQuestion === questions.length - 1 ? (
+                <div>
+                    <button className="sub-btn" onClick={handleSubmit} disabled={isSubmitted}>Submit</button>
                     <button className="fin-btn" onClick={handleFinish}>Finish</button>
                 </div>
             ) : (
-                <div> 
-                    <button className="sub-btn" onClick={handleSubmit} disabled={isSubmitted}>Submit</button>   
-                    <button className="nxt-btn" onClick={nextQuestion}>Next</button>   
+                <div>
+                    <button className="sub-btn" onClick={handleSubmit} disabled={isSubmitted}>Submit</button>
+                    <button className="nxt-btn" onClick={nextQuestion}>Next</button>
                     <button className="fin-btn" onClick={handleFinish}>Finish</button>
                 </div>
             )}
